@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      document.addEventListener("DOMContentLoaded", function(){
+        let link = document.getElementsByTagName("A")[0];
+        link.addEventListener("click", function(e) {
+          e.preventDefault();
+          socket.emit('client', 'client emitted event');
+          return false;
+        });
+        socket.on('server', function(message) {
+          console.log(message);
+        });
+      });
+    </script>
+    <title>Socket.IO Client</title>
+  </head>
+  <body>
+    <h1>Client</h1>
+    <p></p>
+    <a href="#">Click here to see something on the Server</a>
+  </body>
+</html>
