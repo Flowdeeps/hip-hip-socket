@@ -2,18 +2,40 @@
 <html>
   <head>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/p5.js"></script>
     <script>
-      var socket = io();
-      document.addEventListener("DOMContentLoaded", function(){
+      document.addEventListener("DOMContentLoaded", function() {
+        let socket = io();
+        const payload = {};
+        payload.mouseX = 0;
+        payload.mouseY = 0;
+        payload.message = "";
+        // straight up dom
         let link = document.getElementsByTagName("A")[0];
         link.addEventListener("click", function(e) {
           e.preventDefault();
-          socket.emit('client', 'client emitted event');
+          payload.message = "client emitted event";
+          socket.emit("client", JSON.stringify(payload));
           return false;
         });
-        socket.on('server', function(message) {
-          console.log(message);
-        });
+        // p5
+        let canvas = document.getElementById("sketch");
+        let sketch = function(p) {
+          p.setup = function() {
+            p.createCanvas(400, 400);
+            p.background(255,0,0);
+          }
+          p.draw = function() {
+            p.fill(0);
+            p.rect(150, 150, 100, 100);
+            if (p.mouseX < 250 && p.mouseX > 150 && p.mouseY < 250 && p.mouseY > 150) {
+              payload.mouseX = p.mouseX;
+              payload.mouseY = p.mouseY;
+              socket.emit("client", JSON.stringify(payload));
+            }
+          }
+        };
+        new p5(sketch, canvas);
       });
     </script>
     <title>Socket.IO Client</title>
@@ -22,5 +44,6 @@
     <h1>Client</h1>
     <p></p>
     <a href="#">Click here to see something on the Server</a>
+    <div id="test"></div>
   </body>
 </html>

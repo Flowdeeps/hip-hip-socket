@@ -10,6 +10,10 @@ app.get('/client/', (req, res) => {
   res.sendFile(__dirname + '/client.html');
 });
 
+app.get('/p5.js', (req, res) => {
+  res.sendFile(__dirname + '/node_modules/p5/lib/p5.js');
+});
+
 io.on('connection', (socket) => {
   socket.on('server', (message) => {
     console.log('server says', message);
